@@ -1,0 +1,13 @@
+# Credenciales reales: nunca al repositorio
+config/config.php
+.env
+
+# Archivos generados en ejecución
+storage/imagenes/*
+!storage/imagenes/.gitkeep
+storage/logs/*
+!storage/logs/.gitkeep
+
+.DS_Store
+.idea/
+.vscode/
