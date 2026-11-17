@@ -1,0 +1,59 @@
+:root { --azul:#1f3864; --azul2:#2e75b6; --gris:#f3f5f8; --borde:#d6dce5; --rojo:#b42318; --verde:#1a7f37; --ambar:#9a6700; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, "Segoe UI", Arial, sans-serif; background: var(--gris); color:#1d2433; }
+a { color: var(--azul2); }
+.barra { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; background: var(--azul); color:#fff; padding:.7rem 1.5rem; }
+.barra a { color:#fff; text-decoration:none; }
+.barra nav { display:flex; gap:1rem; flex-wrap:wrap; flex:1; }
+.barra nav a:hover { text-decoration:underline; }
+.marca { font-weight:700; font-size:1.2rem; }
+.usuario { display:flex; align-items:center; gap:.5rem; }
+.etiqueta { background:rgba(255,255,255,.2); border-radius:4px; padding:0 .4rem; font-size:.8rem; }
+.contenedor { max-width:1150px; margin:1.5rem auto; padding:0 1rem; }
+.pie { text-align:center; color:#667; font-size:.85rem; padding:2rem 0; }
+.tarjeta { background:#fff; border:1px solid var(--borde); border-radius:8px; padding:1.2rem; }
+.login { max-width:380px; margin:3rem auto; }
+.resumen { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin:1rem 0; }
+.resumen strong { display:block; font-size:2rem; color:var(--azul); }
+label { display:block; margin-bottom:.8rem; font-weight:500; }
+label.check { font-weight:normal; }
+input[type=text], input[type=email], input[type=password], input[type=number], input[type=date],
+input[type=datetime-local], input[type=search], input[type=file], select, textarea {
+    display:block; width:100%; padding:.5rem; border:1px solid var(--borde); border-radius:5px; margin-top:.25rem; font:inherit; background:#fff; }
+.form-inline { display:inline-flex; gap:.5rem; align-items:center; margin:0; flex-wrap:wrap; }
+.form-inline label { margin:0; }
+.form-inline input, .form-inline select { display:inline-block; width:auto; margin:0; }
+.btn, button { background:var(--azul2); color:#fff; border:0; border-radius:5px; padding:.5rem 1rem; cursor:pointer; font:inherit; text-decoration:none; display:inline-block; }
+.btn-sec { background:#6b7280; }
+.btn-peligro { background:var(--rojo); }
+.btn-link { background:none; color:#fff; text-decoration:underline; padding:0; }
+.btn-chico { padding:.25rem .6rem; font-size:.85rem; }
+.barra-herramientas { display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin:1rem 0; }
+.tabla-scroll { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; background:#fff; }
+th, td { padding:.55rem .7rem; border-bottom:1px solid var(--borde); text-align:left; vertical-align:top; }
+th { background:#e9eef5; }
+td.acciones { white-space:nowrap; }
+td.acciones form { display:inline; }
+.paginacion { margin:1rem 0; display:flex; gap:.3rem; flex-wrap:wrap; }
+.paginacion a { padding:.3rem .65rem; border:1px solid var(--borde); border-radius:4px; background:#fff; text-decoration:none; }
+.paginacion a.actual { background:var(--azul2); color:#fff; }
+.alerta { padding:.7rem 1rem; border-radius:6px; margin-bottom:1rem; border:1px solid; }
+.alerta-ok { background:#e8f5ec; border-color:#a6d8b4; color:var(--verde); }
+.alerta-error { background:#fdecea; border-color:#f5b5ae; color:var(--rojo); }
+.alerta-aviso { background:#fff8e1; border-color:#f0d58a; color:var(--ambar); }
+.errores { margin:0; padding-left:1.2rem; }
+.estado { padding:.1rem .5rem; border-radius:10px; font-size:.82rem; background:#e5e7eb; }
+.estado-solicitado { background:#fff3c4; } .estado-aprobado { background:#dbeafe; }
+.estado-entregado { background:#e0e7ff; } .estado-devuelto { background:#dcfce7; }
+.estado-cancelado { background:#f3f4f6; color:#6b7280; } .estado-expirado { background:#fee2e2; color:var(--rojo); }
+.estado-mantenimiento { background:#fff3c4; } .estado-baja { background:#fee2e2; } .estado-disponible { background:#dcfce7; }
+.galeria { display:flex; gap:1rem; flex-wrap:wrap; }
+.galeria figure { margin:0; background:#fff; border:1px solid var(--borde); border-radius:6px; padding:.5rem; text-align:center; }
+.galeria img { width:180px; height:140px; object-fit:cover; display:block; margin-bottom:.4rem; }
+.lista-equipos { max-height:320px; overflow:auto; border:1px solid var(--borde); border-radius:6px; padding:.5rem; background:#fff; }
+.lista-equipos label { font-weight:normal; margin:.2rem 0; }
+.recientes { background:#eef4fb; border-radius:6px; padding:.6rem .8rem; margin-bottom:.8rem; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+pre.json { white-space:pre-wrap; word-break:break-word; font-size:.78rem; margin:0; max-width:320px; }
+@media (max-width:700px) { .grid-2 { grid-template-columns:1fr; } }
