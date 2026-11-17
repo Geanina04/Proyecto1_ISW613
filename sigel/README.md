@@ -1,40 +1,57 @@
 # SIGEL · Sistema de Gestión de Préstamo de Equipos de Laboratorio
 
-Proyecto 1 · ISW-613 Programación en Ambiente Web I · UTN
+Proyecto 1 · ISW-613 Programación en Ambiente Web I · Universidad Técnica Nacional (UTN)
+
+| | |
+|---|---|
+| **Autor** | [Geanina Acosta] |
+| **Sede** | [San Carlos] |
+| **Docente** | Bladimir Arroyo Blanco |
+| **Repositorio** | https://github.com/Geanina04/Proyecto1_ISW613 |
 
 Aplicación web en **PHP 8 sin framework** + **MySQL/MariaDB (InnoDB)** con PDO. Gestiona usuarios,
 categorías, equipos (con imágenes) y préstamos con ventana de tiempo, reportes con exportación CSV y bitácora.
+
+> El proyecto está en la carpeta `sigel/` del repositorio. Todas las rutas de este README parten de ahí.
 
 ## Requisitos
 
 - XAMPP 8.2 o superior (Apache + PHP 8.x + MariaDB).
 - Extensiones de PHP habilitadas: `pdo_mysql`, `fileinfo`, `mbstring` (en `php.ini` quitar el `;` de `extension=fileinfo` si hiciera falta).
+- Git.
 
 ## Instalación desde cero (XAMPP en Windows)
 
-1. **Clonar el repositorio fuera de `htdocs`** (para que nada salvo `public/` quede expuesto):
+1. **Clonar el repositorio fuera de `htdocs`**, para que nada salvo `public/` quede expuesto:
    ```
-   git clone <url-del-repo> C:/proyectos/sigel
+   git clone https://github.com/Geanina04/Proyecto1_ISW613.git C:/Documents/Proyecto1_ISW613
    ```
-2. **Crear la base de datos.** Desde `C:\xampp\mysql\bin`:
+   El proyecto queda en `C:/Documents/Proyecto1_ISW613/sigel`.
+
+2. **Crear la base de datos.** Con MySQL/MariaDB en marcha (XAMPP), ejecutar desde `cmd` o Git Bash
+   (no desde PowerShell, que no admite `<`):
    ```
-   mysql -u root < C:/proyectos/sigel/sql/schema.sql
-   mysql -u root < C:/proyectos/sigel/sql/seed.sql
+   C:\xampp\mysql\bin\mysql -u root < C:/proyectos/Proyecto1_ISW613/sigel/sql/schema.sql
+   C:\xampp\mysql\bin\mysql -u root < C:/proyectos/Proyecto1_ISW613/sigel/sql/seed.sql
    ```
-   Crear un usuario solo para la aplicación (no usar root):
+   > **Aviso:** `schema.sql` empieza con `DROP DATABASE IF EXISTS sigel`; si ya existe una base llamada `sigel`, se borra.
+
+   Crear un usuario solo para la aplicación (no usar `root`):
    ```sql
    CREATE USER 'sigel_app'@'localhost' IDENTIFIED BY 'una_clave_segura';
    GRANT SELECT, INSERT, UPDATE, DELETE ON sigel.* TO 'sigel_app'@'localhost';
    ```
-3. **Configuración.** Copiar `config/config.example.php` como `config/config.php` y poner el usuario y la clave reales.
-   `config.php` está en `.gitignore`: nunca se sube al repositorio. También se pueden usar las variables de
-   entorno `SIGEL_DB_HOST`, `SIGEL_DB_NAME`, `SIGEL_DB_USER` y `SIGEL_DB_PASS`.
-4. **Virtual host.** En `C:\xampp\apache\conf\extra\httpd-vhosts.conf` agregar:
+
+3. **Configuración.** Copiar `sigel/config/config.example.php` como `sigel/config/config.php` y poner el usuario y la
+   clave reales. `config.php` está en `.gitignore`: nunca se sube al repositorio. También se pueden usar las
+   variables de entorno `SIGEL_DB_HOST`, `SIGEL_DB_NAME`, `SIGEL_DB_USER` y `SIGEL_DB_PASS`.
+
+4. **Virtual host.** En `C:\xampp\apache\conf\extra\httpd-vhosts.conf` agregar (ajustar la ruta si se clonó en otra carpeta):
    ```apache
    <VirtualHost *:80>
-       ServerName sigel.local
-       DocumentRoot "C:/proyectos/sigel/public"
-       <Directory "C:/proyectos/sigel/public">
+       ServerName geanina.local.com
+       DocumentRoot "C:/proyectos/Proyecto1_ISW613/sigel/public"
+       <Directory "C:/proyectos/Proyecto1_ISW613/sigel/public">
            AllowOverride None
            Require all granted
            Options -Indexes
@@ -43,13 +60,15 @@ categorías, equipos (con imágenes) y préstamos con ventana de tiempo, reporte
    </VirtualHost>
    ```
    Verificar que en `httpd.conf` esté activa la línea `Include conf/extra/httpd-vhosts.conf`.
+
 5. **Hosts.** Como administrador, agregar en `C:\Windows\System32\drivers\etc\hosts`:
    ```
    127.0.0.1   geanina.local.com
    ```
-6. Reiniciar Apache desde el panel de XAMPP y abrir **http://geanina.local.com
 
-> Las carpetas `storage/imagenes` y `storage/logs` deben tener permiso de escritura para Apache.
+6. Reiniciar Apache desde el panel de XAMPP y abrir **http://geanina.local.com**
+
+> Las carpetas `sigel/storage/imagenes` y `sigel/storage/logs` deben tener permiso de escritura para Apache.
 
 ## Credenciales de prueba
 
@@ -72,29 +91,30 @@ Los permisos se validan en el servidor con `requiereRol()` al inicio de **cada**
 ## Estructura
 
 ```
-sigel/
-├── config/          config.example.php (en Git, valores falsos) y config.php (fuera de Git)
-├── includes/        código reutilizable (no accesible desde la web)
-│   ├── bootstrap.php   se incluye en todas las páginas: errores, sesión, conexión
-│   ├── db.php          conexión PDO
-│   ├── auth.php        sesión, login, bloqueo por intentos, "Recordarme", roles
-│   ├── csrf.php        token CSRF
-│   ├── validacion.php  validaciones del servidor
-│   ├── cookies.php     cookies de registros por página y equipos recientes
-│   ├── bitacora.php    registro de acciones
-│   ├── prestamos.php   estados, transiciones y REGLA 19 (expiración)
-│   ├── imagenes.php    subida segura de imágenes
-│   ├── reportes.php    consulta del reporte y neutralización de fórmulas CSV
-│   ├── helpers.php     escape, redirección, paginación, mensajes
-│   └── plantillas/     encabezado y pie HTML
-├── storage/         imagenes/ subidas y logs/error.log (fuera de public/)
-├── sql/             schema.sql y seed.sql
-└── public/          ÚNICO directorio expuesto (DocumentRoot)
-    ├── index.php
-    ├── imagen.php      sirve imágenes solo a usuarios autenticados
-    ├── pages/          pantallas (GET)
-    ├── actions/        procesan formularios (POST) y redirigen (PRG)
-    └── assets/         css y js
+Proyecto1_ISW613/
+└── sigel/
+    ├── config/          config.example.php (en Git, valores falsos) y config.php (fuera de Git)
+    ├── includes/        código reutilizable (no accesible desde la web)
+    │   ├── bootstrap.php   se incluye en todas las páginas: errores, sesión, conexión
+    │   ├── db.php          conexión PDO
+    │   ├── auth.php        sesión, login, bloqueo por intentos, "Recordarme", roles
+    │   ├── csrf.php        token CSRF
+    │   ├── validacion.php  validaciones del servidor
+    │   ├── cookies.php     cookies de registros por página y equipos recientes
+    │   ├── bitacora.php    registro de acciones
+    │   ├── prestamos.php   estados, transiciones y REGLA 19 (expiración)
+    │   ├── imagenes.php    subida segura de imágenes
+    │   ├── reportes.php    consulta del reporte y neutralización de fórmulas CSV
+    │   ├── helpers.php     escape, redirección, paginación, mensajes
+    │   └── plantillas/     encabezado y pie HTML
+    ├── storage/         imagenes/ subidas y logs/error.log (fuera de public/)
+    ├── sql/             schema.sql y seed.sql
+    └── public/          ÚNICO directorio expuesto (DocumentRoot)
+        ├── index.php
+        ├── imagen.php      sirve imágenes solo a usuarios autenticados
+        ├── pages/          pantallas (GET)
+        ├── actions/        procesan formularios (POST) y redirigen (PRG)
+        └── assets/         css y js
 ```
 
 Flujo típico: `pages/x/form.php` (GET) → `actions/x/guardar.php` (POST: valida, guarda, bitácora) → redirección.
@@ -134,18 +154,23 @@ Flujo típico: `pages/x/form.php` (GET) → `actions/x/guardar.php` (POST: valid
 - La creación es una **transacción**: `SELECT ... FOR UPDATE` sobre los equipos para que dos operadores no
   presten el mismo equipo al mismo tiempo; después se valida estado, días máximos de la categoría y traslape.
 - Edición de equipos con **control optimista** (columna `version`).
+- Eliminación lógica (`eliminado_en`) en usuarios, categorías y equipos; para liberar los campos `UNIQUE` se
+  modifica el código, correo o nombre al eliminar, y los valores originales quedan en la bitácora.
 
 ## Regla 19 · Expiración de solicitudes
 
 - Cambio de esquema: estado `expirado` en `prestamos.estado` y fila `horas_expiracion = 24` en la tabla `configuracion`.
-- `expirarSolicitudes()` (`includes/prestamos.php`) se ejecuta al abrir el listado de préstamos.
-  Solo cambia préstamos en `solicitado` con `creado_en` de hace más de 24 h, registra cada cambio en la bitácora
-  (acción `expirar`) y, como el `UPDATE` exige `estado = 'solicitado'`, no se repite en consultas posteriores.
+- `expirarSolicitudes()` (`includes/prestamos.php`) se ejecuta al abrir el listado de préstamos (y antes de crear
+  un préstamo o cambiar un estado). Solo cambia préstamos en `solicitado` con `creado_en` de hace más de 24 h,
+  registra cada cambio en la bitácora (acción `expirar`) y, como el `UPDATE` exige `estado = 'solicitado'`,
+  no se repite en consultas posteriores. Un préstamo expirado deja de bloquear el equipo.
 
 **Cómo comprobarlo con el seed:**
 1. Entrar como operador y abrir *Préstamos*: el #1 (creado hace 25 h) aparece **expirado** y el #2 (aprobado, también de hace 25 h) sigue **aprobado**.
 2. Entrar como admin → *Bitácora* → acción `expirar`: hay un registro para el préstamo #1.
 3. Recargar el listado: no aparece de nuevo el aviso ni se agregan registros a la bitácora.
+
+> Los préstamos de prueba #1 y #2 se crean con `NOW() - 25 HOUR` al cargar `seed.sql`; para repetir la prueba, volver a ejecutar `schema.sql` y `seed.sql`.
 
 ## Bitácora
 
